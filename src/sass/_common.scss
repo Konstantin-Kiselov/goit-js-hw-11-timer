@@ -1,0 +1,23 @@
+.title {
+  text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin: 10px;
+  border: 1px solid tomato;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+}
+
+.value {
+  margin-bottom: 10px;
+}
