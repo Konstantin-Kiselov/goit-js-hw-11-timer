@@ -7,64 +7,81 @@ const refs = {
   secs: document.querySelector('[data-value="secs"]'),
 };
 
-const targetDate = new Date('31 Dec, 2021 23:59:59');
-console.log('targetDate:', targetDate);
+class CountdownTimer {
+  constructor({ selector, targetDate, showDate }) {
+    this.intervalId = null;
+    this.selector = selector;
+    this.targetDate = targetDate;
+    this.showDate = showDate;
 
-let timerId = null;
-let secs = null;
-let mins = null;
-let hours = null;
-let days = null;
+    this.start();
+  }
 
-function timer() {
-  const time = targetDate - Date.now();
-  //   console.log(time);
+  start() {
+    this.intervalId = setInterval(() => {
+      const startTime = Date.now();
+      const deltaTime = this.targetDate - startTime;
+      const time = this.getTimeComponents(deltaTime);
 
-  /*
-   * Оставшиеся дни: делим значение UTC на 1000 * 60 * 60 * 24, количество
-   * миллисекунд в одном дне (миллисекунды * секунды * минуты * часы)
-   */
-  days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-  //   console.log(days);
+      this.showDate(time);
+      // console.log(timeComponents);
+      // console.log(`${time.days}:${time.hours}:${time.mins}:${time.secs}`);
+    }, 1000);
+  }
 
-  /*
-   * Оставшиеся часы: получаем остаток от предыдущего расчета с помощью оператора
-   * остатка % и делим его на количество миллисекунд в одном часе
-   * (1000 * 60 * 60 = миллисекунды * минуты * секунды)
-   */
-  hours = pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-  //   console.log(hours);
+  stop() {
+    clearInterval(this.intervalId);
+  }
 
-  /*
-   * Оставшиеся минуты: получаем оставшиеся минуты и делим их на количество
-   * миллисекунд в одной минуте (1000 * 60 = миллисекунды * секунды)
-   */
-  mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-  //   console.log(mins);
+  /* Формулы для получения значений с миллисекунд в дни:часы:минуты:секунды */
+  getTimeComponents(time) {
+    /*
+     * Оставшиеся дни: делим значение UTC на 1000 * 60 * 60 * 24, количество
+     * миллисекунд в одном дне (миллисекунды * секунды * минуты * часы)
+     */
+    const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
 
-  /*
-   * Оставшиеся секунды: получаем оставшиеся секунды и делим их на количество
-   * миллисекунд в одной секунде (1000)
-   */
-  secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-  //   console.log(secs);
+    /*
+     * Оставшиеся часы: получаем остаток от предыдущего расчета с помощью оператора
+     * остатка % и делим его на количество миллисекунд в одном часе
+     * (1000 * 60 * 60 = миллисекунды * минуты * секунды)
+     */
+    const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
 
+    /*
+     * Оставшиеся минуты: получаем оставшиеся минуты и делим их на количество
+     * миллисекунд в одной минуте (1000 * 60 = миллисекунды * секунды)
+     */
+    const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+
+    /*
+     * Оставшиеся секунды: получаем оставшиеся секунды и делим их на количество
+     * миллисекунд в одной секунде (1000)
+     */
+    const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+
+    return { days, hours, mins, secs };
+  }
+
+  /* Принимает число, приводит к строке и добавляет 0, если число меньше 2-х знаков*/
+  pad(value) {
+    return String(value).padStart(2, '0');
+  }
+}
+
+/* Обновляем данные в index.html { days, hours, mins, secs } */
+function updateClockFace({ days, hours, mins, secs }) {
   refs.days.textContent = days;
   refs.hours.textContent = hours;
   refs.mins.textContent = mins;
   refs.secs.textContent = secs;
 }
 
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
+/* Создаем экземпляр класса CountdownTimer */
+const timer = new CountdownTimer({
+  selector: '#timer-1',
+  targetDate: new Date('Dec 31, 2021 23:59:59'),
+  showDate: updateClockFace,
+});
 
-function startTimer() {
-  timerId = setInterval(timer, 1000);
-}
-
-function stopTimer() {
-  clearInterval(timerId);
-}
-
-document.addEventListener('DOMContentLoaded', startTimer);
+console.log(timer);
