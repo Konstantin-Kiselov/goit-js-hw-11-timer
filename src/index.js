@@ -1,18 +1,10 @@
 import './sass/main.scss';
 
-const refs = {
-  days: document.querySelector('[data-value="days"]'),
-  hours: document.querySelector('[data-value="hours"]'),
-  mins: document.querySelector('[data-value="mins"]'),
-  secs: document.querySelector('[data-value="secs"]'),
-};
-
 class CountdownTimer {
-  constructor({ selector, targetDate, showDate }) {
+  constructor({ selector, targetDate }) {
     this.intervalId = null;
-    this.selector = selector;
+    this.selector = document.querySelector(selector);
     this.targetDate = targetDate;
-    this.showDate = showDate;
 
     this.start();
   }
@@ -67,21 +59,28 @@ class CountdownTimer {
   pad(value) {
     return String(value).padStart(2, '0');
   }
-}
 
-/* Обновляем данные в index.html { days, hours, mins, secs } */
-function updateClockFace({ days, hours, mins, secs }) {
-  refs.days.textContent = days;
-  refs.hours.textContent = hours;
-  refs.mins.textContent = mins;
-  refs.secs.textContent = secs;
+  /* Обновляем данные в index.html { days, hours, mins, secs } */
+  showDate({ days, hours, mins, secs }) {
+    this.selector.children[0].children[0].textContent = days;
+    this.selector.children[1].children[0].textContent = hours;
+    this.selector.children[2].children[0].textContent = mins;
+    this.selector.children[3].children[0].textContent = secs;
+  }
 }
 
 /* Создаем экземпляр класса CountdownTimer */
-const timer = new CountdownTimer({
+const timerSummer = new CountdownTimer({
   selector: '#timer-1',
-  targetDate: new Date('Dec 31, 2021 23:59:59'),
-  showDate: updateClockFace,
+  targetDate: new Date('Sep 01, 2021'),
 });
 
-console.log(timer);
+console.log(timerSummer);
+
+/* Создаем экземпляр класса CountdownTimer */
+const timerNY = new CountdownTimer({
+  selector: '#timer-2',
+  targetDate: new Date('Jan 01, 2022 00:00:00'),
+});
+
+console.log(timerNY);
