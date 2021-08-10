@@ -3,7 +3,7 @@ import './sass/main.scss';
 class CountdownTimer {
   constructor({ selector, targetDate }) {
     this.intervalId = null;
-    this.selector = document.querySelector(selector);
+    this.element = document.querySelector(selector);
     this.targetDate = targetDate;
 
     this.start();
@@ -62,17 +62,17 @@ class CountdownTimer {
 
   /* Обновляем данные в index.html { days, hours, mins, secs } */
   showDate({ days, hours, mins, secs }) {
-    this.selector.children[0].children[0].textContent = days;
-    this.selector.children[1].children[0].textContent = hours;
-    this.selector.children[2].children[0].textContent = mins;
-    this.selector.children[3].children[0].textContent = secs;
+    this.element.querySelector('[data-value = "days"]').textContent = days;
+    this.element.querySelector('[data-value = "hours"]').textContent = hours;
+    this.element.querySelector('[data-value = "mins"]').textContent = mins;
+    this.element.querySelector('[data-value = "secs"]').textContent = secs;
   }
 }
 
 /* Создаем экземпляр класса CountdownTimer */
 const timerSummer = new CountdownTimer({
   selector: '#timer-1',
-  targetDate: new Date('Sep 01, 2021'),
+  targetDate: new Date('Sep 01, 2021 00:00:00'),
 });
 
 console.log(timerSummer);
@@ -80,7 +80,7 @@ console.log(timerSummer);
 /* Создаем экземпляр класса CountdownTimer */
 const timerNY = new CountdownTimer({
   selector: '#timer-2',
-  targetDate: new Date('Jan 01, 2022 00:00:00'),
+  targetDate: new Date('Dec 31, 2021 23:59:59'),
 });
 
 console.log(timerNY);
